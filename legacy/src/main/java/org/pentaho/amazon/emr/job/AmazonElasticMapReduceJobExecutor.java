@@ -60,6 +60,7 @@ import org.pentaho.hadoop.shim.spi.HadoopShim;
 import org.pentaho.metastore.api.IMetaStore;
 import org.w3c.dom.Node;
 
+<<<<<<< HEAD
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClient;
 import com.amazonaws.services.elasticmapreduce.model.AddJobFlowStepsRequest;
 import com.amazonaws.services.elasticmapreduce.model.DescribeJobFlowsRequest;
@@ -74,6 +75,20 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+=======
+@JobEntry( id = "EMRJobExecutorPlugin", image = "EMR.svg", name = "EMRJobExecutorPlugin.Name",
+  description = "EMRJobExecutorPlugin.Description",
+  categoryDescription = "i18n:org.pentaho.di.job:JobCategory.Category.BigData",
+  documentationUrl = "Products/Data_Integration/Job_Entry_Reference/Amazon_EMR_Job_Executor",
+  i18nPackageName = "org.pentaho.amazon.emr.job" )
+public class AmazonElasticMapReduceJobExecutor extends AbstractAmazonJobExecutor {
+
+  private static Class<?> PKG = AmazonElasticMapReduceJobExecutor.class;
+  private static final String STEP_EMR = "emr";
+  private URL localFileUrl;
+
+  protected String jarUrl = "";
+>>>>>>> 0cfeb036... [BACKLOG-23119] Help Links need to be created for the JMS Consumer step, JMS Producer step, Amazon EMR Job Executor entry, and Amazon Hive Job entry
 
 @JobEntry( id = "EMRJobExecutorPlugin", image = "EMR.svg", name = "EMRJobExecutorPlugin.Name",
     description = "EMRJobExecutorPlugin.Description",

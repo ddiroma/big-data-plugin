@@ -77,11 +77,19 @@ import com.amazonaws.services.s3.model.S3Object;
  * Pentaho Data Integration (Kettle).
  */
 @JobEntry( id = "HiveJobExecutorPlugin", image = "AWS-HIVE.svg", name = "HiveJobExecutorPlugin.Name",
+<<<<<<< HEAD
     description = "HiveJobExecutorPlugin.Description",
     categoryDescription = "i18n:org.pentaho.di.job:JobCategory.Category.BigData",
     documentationUrl = "http://wiki.pentaho.com/display/EAI/Amazon+Hive+Job+Executor",
     i18nPackageName = "org.pentaho.amazon.hive.job" )
 public class AmazonHiveJobExecutor extends AbstractAmazonJobEntry implements Cloneable, JobEntryInterface {
+=======
+  description = "HiveJobExecutorPlugin.Description",
+  categoryDescription = "i18n:org.pentaho.di.job:JobCategory.Category.BigData",
+  documentationUrl = "Products/Data_Integration/Job_Entry_Reference/Amazon_Hive_Job_Executor",
+  i18nPackageName = "org.pentaho.amazon.hive.job" )
+public class AmazonHiveJobExecutor extends AbstractAmazonJobExecutor {
+>>>>>>> 0cfeb036... [BACKLOG-23119] Help Links need to be created for the JMS Consumer step, JMS Producer step, Amazon EMR Job Executor entry, and Amazon Hive Job entry
 
   private static Class<?> PKG = AmazonHiveJobExecutor.class; // for i18n purposes, needed by Translator2!! $NON-NLS-1$
 
