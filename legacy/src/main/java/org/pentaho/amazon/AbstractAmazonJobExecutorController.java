@@ -54,6 +54,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.job.entry.JobEntryInterface;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.core.database.dialog.tags.ExtTextbox;
+import org.pentaho.di.ui.core.events.dialog.ConnectionFilterType;
 import org.pentaho.di.ui.core.events.dialog.FilterType;
 import org.pentaho.di.ui.core.events.dialog.ProviderFilterType;
 import org.pentaho.di.ui.core.events.dialog.SelectionAdapterFileDialogTextVar;
@@ -1165,11 +1166,12 @@ public abstract class AbstractAmazonJobExecutorController extends AbstractXulEve
 
   public void browseS3StagingDir() {
     TextVar textVar = ( (ExtTextbox) container.getDocumentRoot().getElementById( XUL_S3_STAGING_DIRECTORY ) ).extText;
+    SelectionAdapterOptions options = new SelectionAdapterOptions( SelectionOperation.FOLDER,
+      new FilterType[] { FilterType.ALL }, FilterType.ALL,
+      new ProviderFilterType[] { ProviderFilterType.LOCAL, ProviderFilterType.VFS } );
+    options.getConnectionFilters().add( ConnectionFilterType.S3 );
     SelectionAdapterFileDialogTextVar selectionAdapterFileDialogTextVar =
-      new SelectionAdapterFileDialogTextVar( log, textVar, getJobEntry().getParentJobMeta(),
-        new SelectionAdapterOptions( SelectionOperation.FOLDER,
-          new FilterType[] { FilterType.ALL }, FilterType.ALL,
-          new ProviderFilterType[] { ProviderFilterType.LOCAL, ProviderFilterType.VFS } ) );
+      new SelectionAdapterFileDialogTextVar( log, textVar, getJobEntry().getParentJobMeta(), options );
 
     selectionAdapterFileDialogTextVar.widgetSelected( null );
     String file = textVar.getText();

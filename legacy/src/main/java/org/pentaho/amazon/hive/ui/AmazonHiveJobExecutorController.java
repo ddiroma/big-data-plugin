@@ -30,6 +30,7 @@ import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.core.database.dialog.tags.ExtTextbox;
+import org.pentaho.di.ui.core.events.dialog.ConnectionFilterType;
 import org.pentaho.di.ui.core.events.dialog.FilterType;
 import org.pentaho.di.ui.core.events.dialog.ProviderFilterType;
 import org.pentaho.di.ui.core.events.dialog.SelectionAdapterFileDialogTextVar;
@@ -148,11 +149,13 @@ public class AmazonHiveJobExecutorController extends AbstractAmazonJobExecutorCo
    */
   public void browseQ() {
     TextVar textVar = ( (ExtTextbox) container.getDocumentRoot().getElementById( XUL_QURL ) ).extText;
+    SelectionAdapterOptions options =
+      new SelectionAdapterOptions( SelectionOperation.FILE,
+        new FilterType[] { FilterType.ALL }, FilterType.ALL,
+        new ProviderFilterType[] { ProviderFilterType.LOCAL, ProviderFilterType.VFS } );
+    options.getConnectionFilters().add( ConnectionFilterType.S3);
     SelectionAdapterFileDialogTextVar selectionAdapterFileDialogTextVar =
-      new SelectionAdapterFileDialogTextVar( log, textVar, getJobEntry().getParentJobMeta(),
-        new SelectionAdapterOptions( SelectionOperation.FILE,
-          new FilterType[] { FilterType.ALL }, FilterType.ALL,
-          new ProviderFilterType[] { ProviderFilterType.LOCAL, ProviderFilterType.VFS } ) );
+      new SelectionAdapterFileDialogTextVar( log, textVar, getJobEntry().getParentJobMeta(), options );
 
     selectionAdapterFileDialogTextVar.widgetSelected( null );
 
