@@ -2,7 +2,7 @@
  *
  * Pentaho Big Data
  *
- * Copyright (C) 2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2019-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -220,5 +220,16 @@ public class S3Details implements VFSConnectionDetails {
     props.put( "connectionType", getConnectionType() );
 
     return props;
+  }
+
+  @Override
+  public void stripCredentials() {
+    this.accessKey = null;
+    this.secretKey = null;
+    this.credentialsFilePath = null;
+    this.credentialsFile = null;
+    this.authType = null;
+    this.region = null;
+    this.profileName = null;
   }
 }
