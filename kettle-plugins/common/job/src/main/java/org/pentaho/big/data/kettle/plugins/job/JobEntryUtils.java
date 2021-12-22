@@ -24,9 +24,10 @@ package org.pentaho.big.data.kettle.plugins.job;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;
 
@@ -40,7 +41,7 @@ public class JobEntryUtils {
   public static Logger findLogger( String logName ) {
     Log log = LogFactory.getLog( logName );
     if ( log instanceof org.apache.commons.logging.impl.Log4JLogger ) {
-      Logger logger = ( (org.apache.commons.logging.impl.Log4JLogger) log ).getLogger();
+      Logger logger = LogManager.getLogger();
       if ( logger == null ) {
         throw new IllegalArgumentException( "Logger does not exist for log: " + logName );
       }
@@ -56,28 +57,30 @@ public class JobEntryUtils {
       String... logNames ) {
     for ( String logName : logNames ) {
       Logger logger = findLogger( logName );
-      logger.addAppender( appender );
+      LogUtils.addAppender( appender, logger, logger.getLevel() );
       // Update logger level to match our logging level
-      Level level = org.pentaho.di.core.logging.KettleLogChannelAppender.LOG_LEVEL_MAP.get( logLevel );
-      if ( level != null ) {
-        // Cache the original level so we can reset it when we're done
-        logLevelCache.put( logger.getName(), logger.getLevel() );
-        logger.setLevel( level );
-      }
+//      Level level = org.pentaho.di.core.logging.KettleLogChannelAppender.LOG_LEVEL_MAP.get( logLevel );
+//      if ( level != null ) {
+//        // Cache the original level so we can reset it when we're done
+//        logLevelCache.put( logger.getName(), logger.getLevel() );
+//        logger.setLevel( level );
+//      }
     }
   }
 
   public static void removeAppenderFrom( Appender appender, Map<String, Level> logLevelCache, String... logNames ) {
     for ( String logName : logNames ) {
       Logger logger = findLogger( logName );
-      logger.removeAppender( appender );
+      LogUtils.removeAppender( appender, logger );
+      LogUtils.removeAppender( appender, logger );
+//      logger.removeAppender( appender );
       // Reset logger level if it was changed
       if ( logLevelCache.containsKey( logger.getName() ) ) {
-        logger.setLevel( logLevelCache.get( logger.getName() ) );
+        logger.atLevel( logLevelCache.get( logger.getName() ) );
         logLevelCache.remove( logger.getName() );
       }
     }
-    appender.close();
+    appender.stop();//.close();
   }
 
   /**
@@ -86,7 +89,7 @@ public class JobEntryUtils {
    */
   /**
    * Determine if the string equates to {@link Boolean#TRUE} after performing a variable substitution.
-   * 
+   *
    * @param s
    *          String-encoded boolean value or variable expression
    * @param variableSpace
@@ -100,7 +103,7 @@ public class JobEntryUtils {
 
   /**
    * Parse the string as a {@link Long} after variable substitution.
-   * 
+   *
    * @param s
    *          String-encoded {@link Long} value or variable expression that should resolve to a {@link Long} value
    * @param variableSpace

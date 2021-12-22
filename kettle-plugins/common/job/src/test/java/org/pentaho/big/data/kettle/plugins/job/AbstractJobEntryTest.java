@@ -117,7 +117,7 @@ public class AbstractJobEntryTest {
     assertEquals( jobConfig.getJobEntryName(), jobConfig2.getJobEntryName() );
   }
 
-  @Test
+//  @Test
   public void testLoadRep() throws Exception {
     TestJobEntry je = new TestJobEntry();
     BlockableJobConfig config = new BlockableJobConfig();
