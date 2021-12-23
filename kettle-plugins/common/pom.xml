@@ -14,5 +14,7 @@
     <module>ui</module>
     <module>namedClusterBridge</module>
     <module>job</module>
+    <module>pentaho-big-data-kettle-plugins-common-utils</module>
+    <module>pentaho-big-data-kettle-plugins-common-utils</module>
   </modules>
 </project>

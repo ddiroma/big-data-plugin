@@ -1,4 +1,4 @@
-package org.pentaho.big.data.kettle.plugins.job;
+package org.pentaho.big.data.kettle.plugins.common.utils;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +35,9 @@ public class LogUtils {
   }
 
   public static Appender makeAppender( String name, StringWriter stringWriter, String layout ) {
+    if ( layout == null ) {
+      layout = PatternLayout.createDefaultLayout().getConversionPattern();
+    }
     return WriterAppender.newBuilder().setName( name )
       .setLayout( PatternLayout.newBuilder().withPattern( layout ).build() ).setTarget( stringWriter ).build();
   }
@@ -43,3 +46,4 @@ public class LogUtils {
     return WriterAppender.newBuilder().setName( name ).setLayout( layout ).setTarget( writer ).build();
   }
 }
+

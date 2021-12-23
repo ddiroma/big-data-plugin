@@ -28,6 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.pentaho.big.data.kettle.plugins.common.utils.LogUtils;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.variables.VariableSpace;
 
@@ -71,7 +72,6 @@ public class JobEntryUtils {
   public static void removeAppenderFrom( Appender appender, Map<String, Level> logLevelCache, String... logNames ) {
     for ( String logName : logNames ) {
       Logger logger = findLogger( logName );
-      LogUtils.removeAppender( appender, logger );
       LogUtils.removeAppender( appender, logger );
 //      logger.removeAppender( appender );
       // Reset logger level if it was changed

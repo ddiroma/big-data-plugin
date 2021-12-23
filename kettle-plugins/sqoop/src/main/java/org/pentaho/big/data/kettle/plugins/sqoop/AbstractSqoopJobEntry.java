@@ -26,9 +26,16 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.appender.WriterAppender;
 import org.pentaho.big.data.kettle.plugins.job.PropertyEntry;
 import org.pentaho.hadoop.shim.api.HadoopClientServices;
 import org.pentaho.hadoop.shim.api.core.ShimIdentifierInterface;
@@ -100,7 +107,7 @@ public abstract class AbstractSqoopJobEntry<S extends SqoopConfig> extends Abstr
 
   /**
    * Declare the Sqoop tool used in this job entry.
-   * 
+   *
    * @return the name of the sqoop tool to use, e.g. "import"
    */
   protected abstract String getToolName();
@@ -197,8 +204,9 @@ public abstract class AbstractSqoopJobEntry<S extends SqoopConfig> extends Abstr
    */
   @SuppressWarnings( "deprecation" )
   public void attachLoggingAppenders() {
-    sqoopToKettleAppender = new org.pentaho.di.core.logging.KettleLogChannelAppender( log );
-    sqoopToKettleAppender.addFilter( new SqoopLog4jFilter( log.getLogChannelId() ) );
+    // TODO: find way around this
+//    sqoopToKettleAppender = new org.pentaho.di.core.logging.KettleLogChannelAppender( log );
+//    sqoopToKettleAppender.addFilter( new SqoopLog4jFilter( log.getLogChannelId() ) );
     MDC.put( "logChannelId", log.getLogChannelId() );
     try {
       // Redirect all stderr logging to the first log to monitor so it shows up in the Kettle LogChannel

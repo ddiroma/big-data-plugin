@@ -22,6 +22,18 @@
 
 package org.pentaho.big.data.kettle.plugins.mapreduce.entry.pmr;
 
+import org.apache.commons.vfs2.FileObject;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.WriterAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.hadoop.shim.api.cluster.NamedCluster;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterService;
 import org.pentaho.hadoop.shim.api.cluster.NamedClusterServiceLocator;
@@ -43,8 +55,6 @@ import org.pentaho.di.core.annotations.JobEntry;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
-import org.pentaho.di.core.logging.Log4jFileAppender;
-import org.pentaho.di.core.logging.LogWriter;
 import org.pentaho.di.core.plugins.JobEntryPluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
 import org.pentaho.di.core.plugins.PluginRegistry;
@@ -75,6 +85,10 @@ import org.pentaho.runtime.test.action.RuntimeTestActionService;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -552,12 +566,18 @@ public class JobEntryHadoopTransJobExecutor extends JobEntryBase implements Clon
 
     result.setNrErrors( 0 );
 
-    Log4jFileAppender appender = null;
+    Appender appender = null;
     String logFileName = "pdi-" + this.getName(); //$NON-NLS-1$
+    Logger logger = LogManager.getContext().getLogger( logFileName );
+    FileObject file = null;
 
     try {
-      appender = LogWriter.createFileAppender( logFileName, false, false );
-      LogWriter.getInstance().addAppender( appender );
+      file = KettleVFS.getFileObject( logFileName );
+      OutputStream outputStream = KettleVFS.getOutputStream( file, false );
+      appender = makeAppender( logFileName, new OutputStreamWriter( outputStream, Charset.forName( "utf-8" ) ),
+        PatternLayout.createDefaultLayout() );
+      // TODO: find Level of logging instead of null
+      addAppender( appender, logger, null );
       log.setLogLevel( parentJob.getLogLevel() );
     } catch ( Exception e ) {
       logError( BaseMessages.getString( PKG,
@@ -839,11 +859,10 @@ public class JobEntryHadoopTransJobExecutor extends JobEntryBase implements Clon
     }
 
     if ( appender != null ) {
-      LogWriter.getInstance().removeAppender( appender );
-      appender.close();
+      removeAppender( appender, logger );
 
       ResultFile resultFile =
-        new ResultFile( ResultFile.FILE_TYPE_LOG, appender.getFile(), parentJob.getJobname(), getName() );
+        new ResultFile( ResultFile.FILE_TYPE_LOG, file, parentJob.getJobname(), getName() );
       result.getResultFiles().put( resultFile.getFile().toString(), resultFile );
     }
 
@@ -1535,5 +1554,29 @@ public class JobEntryHadoopTransJobExecutor extends JobEntryBase implements Clon
 
   @Override public String getDialogClassName() {
     return DIALOG_NAME;
+  }
+
+
+  private static Appender makeAppender( String name, Writer writer, Layout layout ) {
+    return WriterAppender.newBuilder().setName( name ).setLayout( layout ).setTarget( writer ).build();
+  }
+
+  private static void addAppender( Appender appender, Logger logger, Level level ) {
+    LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
+    Configuration config = ctx.getConfiguration();
+    appender.start();
+    config.addAppender( appender );
+    LoggerConfig loggerConfig = config.getLoggerConfig( logger.getName() );
+    loggerConfig.addAppender( appender, level, null );
+    ctx.updateLoggers();
+  }
+
+  private static void removeAppender( Appender appender, Logger logger ) {
+    appender.stop();
+    LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
+    Configuration config = ctx.getConfiguration();
+    LoggerConfig loggerConfig = config.getLoggerConfig( logger.getName() );
+    loggerConfig.removeAppender( logger.getName() );
+    ctx.updateLoggers();
   }
 }

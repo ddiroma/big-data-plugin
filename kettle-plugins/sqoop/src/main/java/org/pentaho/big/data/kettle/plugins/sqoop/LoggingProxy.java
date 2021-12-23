@@ -22,8 +22,8 @@
 
 package org.pentaho.big.data.kettle.plugins.sqoop;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import java.io.PrintStream;
 
@@ -38,7 +38,7 @@ public class LoggingProxy extends PrintStream {
   /**
    * Create a new Logging proxy that will log all {@link String}s printed with {@link #print(String)} to the logger
    * using the level provided.
-   * 
+   *
    * @param stream
    *          Stream to redirect output for
    * @param logger
