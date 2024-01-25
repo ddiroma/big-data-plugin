@@ -65,7 +65,12 @@ import static org.pentaho.big.data.kettle.plugins.kafka.KafkaConsumerInputMeta.C
 import static org.pentaho.big.data.kettle.plugins.kafka.KafkaConsumerInputMeta.ConnectionType.DIRECT;
 
 @SuppressWarnings ( { "FieldCanBeLocal", "unused" } )
+<<<<<<< HEAD
 @PluginDialog ( id = "KafkaConsumerInput", pluginType = PluginDialog.PluginType.STEP, image = "KafkaConsumerInput.svg" )
+=======
+@PluginDialog ( id = "KafkaConsumerInput", pluginType = PluginDialog.PluginType.STEP, image = "KafkaConsumerInput.svg",
+        documentationUrl = "mk-95pdia003/pdi-transformation-steps/kafka-consumer" )
+>>>>>>> 3a6aa0d1b ([BACKLOG-39651] Update and validate in-product links in Pentaho 10.1)
 public class KafkaConsumerInputDialog extends BaseStreamingDialog implements StepDialogInterface {
 
   private static final int INPUT_WIDTH = 350;
